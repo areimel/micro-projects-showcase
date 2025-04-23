@@ -36,6 +36,18 @@ import '@fontsource-variable/inter';
 
     --aw-color-bg-page-dark: rgb(3 6 32);
 
+    /* Neo-brutalist design variables */
+    --neo-border-color: rgb(0 0 0);
+    --neo-border-width-normal: 2px;
+    --neo-border-width-thick: 4px;
+    --neo-shadow-color: rgb(0 0 0);
+    --neo-shadow-offset-normal: 4px 4px 0;
+    --neo-shadow-offset-large: 8px 0 0;
+    --neo-shadow-blur: 0;
+    --neo-hover-transition: all 0.2s ease-in-out;
+    --neo-hover-transform: translate(-2px, -2px);
+    --neo-hover-shadow-offset: 6px 6px 0;
+
     ::selection {
       background-color: lavender;
     }
@@ -55,9 +67,44 @@ import '@fontsource-variable/inter';
     --aw-color-text-muted: rgb(229 236 246 / 66%);
     --aw-color-bg-page: rgb(3 6 32);
 
+    /* Neo-brutalist design variables - dark mode */
+    --neo-border-color: rgb(255 255 255);
+    --neo-shadow-color: rgb(255 255 255);
+
     ::selection {
       background-color: black;
       color: snow;
     }
+  }
+
+  /* Creating custom Tailwind-ready utility classes */
+  .neo-border {
+    border-color: var(--neo-border-color);
+    border-style: solid;
+  }
+
+  .neo-border-normal {
+    border-width: var(--neo-border-width-normal);
+  }
+
+  .neo-border-thick {
+    border-width: var(--neo-border-width-thick);
+  }
+
+  .neo-shadow-normal {
+    box-shadow: var(--neo-shadow-offset-normal) var(--neo-shadow-blur) var(--neo-shadow-color);
+  }
+
+  .neo-shadow-large {
+    box-shadow: var(--neo-shadow-offset-large) var(--neo-shadow-blur) var(--neo-shadow-color);
+  }
+
+  .neo-hover {
+    transition: var(--neo-hover-transition);
+  }
+
+  .neo-hover:hover {
+    transform: var(--neo-hover-transform);
+    box-shadow: var(--neo-hover-shadow-offset) var(--neo-shadow-blur) var(--neo-shadow-color);
   }
 </style>
