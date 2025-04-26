@@ -1,0 +1,11 @@
+---
+import { Icon } from 'astro-icon/components';
+import { getPermalink } from '~/utils/permalinks';
+---
+
+<div class="mx-auto px-6 sm:px-6 max-w-3xl mt-8 pb-12 border-b border-primary/10 dark:border-slate-700">
+  <a class="btn btn-primary" href={getPermalink('project')}>
+    <Icon name="tabler:chevron-left" class="w-5 h-5 mr-1 -ml-1.5" />
+    Back to Projects
+  </a>
+</div> 

@@ -1,0 +1,79 @@
+---
+publishDate: 2023-01-02T00:00:00Z
+title: Markdown elements demo post
+excerpt: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+image: https://images.unsplash.com/photo-1710170601257-242514895755?q=80&w=2832&auto=format&fit=crop
+tags:
+  - markdown
+  - blog
+  - Astro
+# Project specific fields
+projectUrl: https://example.com
+repoUrl: https://github.com/username/repo
+technologies: 
+  - "Astro: website architecture"
+  - "A-Frame: VR/AR Code"
+  - "Tailwind CSS: UI Styling"
+---
+
+import Logo from '~/components/Logo.astro';
+
+# Interactive Project Demo
+
+This is a sample project that demonstrates how to create interactive web components. The sandbox area above can be used to showcase your project's functionality.
+
+## Features
+
+- Interactive sandbox area for demonstrations
+- Support for importing components
+- Easy to customize and extend
+
+## How to Use This Template
+
+1. Clone this template file
+2. Update the frontmatter with your project details
+3. Add your interactive components
+4. Write documentation explaining your project
+
+## Example Code
+
+Here's a simple example of JavaScript code that could be used in your project:
+
+```js
+// Example JavaScript for an interactive component
+function createInteractiveElement() {
+  const element = document.createElement('div');
+  element.className = 'interactive-element';
+  
+  element.addEventListener('click', () => {
+    element.classList.toggle('active');
+  });
+  
+  return element;
+}
+
+// Initialize the component
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.querySelector('.sandbox-container');
+  const element = createInteractiveElement();
+  container.appendChild(element);
+});
+```
+
+## More Resources
+
+For more information on creating interactive web components, check out these resources:
+
+- [MDN Web Docs](https://developer.mozilla.org/)
+- [Web Components](https://www.webcomponents.org/)
+- [JavaScript.info](https://javascript.info/)
+
+## Project Logo
+
+<div style="text-align: center; margin: 2rem 0;">
+  <Logo />
+</div>
+
+## Next Steps
+
+Feel free to customize this template to fit your specific project needs. You can add more sections, code examples, or explanations as needed.

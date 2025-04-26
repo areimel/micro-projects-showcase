@@ -1,0 +1,33 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+  tagline?: string;
+  classes?: Record<string, string>;
+}
+
+const {
+  title = await Astro.slots.render('default'),
+  subtitle = await Astro.slots.render('subtitle'),
+  tagline,
+  classes = {},
+} = Astro.props;
+
+const {
+  container: containerClass = 'max-w-4xl mx-auto',
+  title: titleClass = 'text-4xl md:text-5xl font-bold leading-tighter tracking-tighter mb-4 font-heading',
+  subtitle: subtitleClass = 'text-xl text-muted',
+} = classes;
+---
+
+{
+  (title || subtitle || tagline) && (
+    <div class={containerClass}>
+      {tagline && (
+        <p class="text-base text-secondary dark:text-blue-200 font-bold tracking-wide uppercase" set:html={tagline} />
+      )}
+      {title && <h1 class={titleClass} set:html={title} />}
+      {subtitle && <p class={subtitleClass} set:html={subtitle} />}
+    </div>
+  )
+} 
