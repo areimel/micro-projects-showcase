@@ -1,11 +1,7 @@
 ---
 import PostTags from '~/components/blog/Tags.astro';
 import SocialShare from '~/components/common/SocialShare.astro';
-import ProjectHeader from '~/components/ProjectComponents/ProjectHeader.astro';
-// Import left in for use in MDX content via slot
-// eslint-disable-next-line no-unused-vars
-import ProjectSandbox from '~/components/ProjectComponents/ProjectSandbox.astro';
-
+// ProjectHeader and ProjectSandbox are used in MDX files via the slot
 import type { Post } from '~/types';
 
 // Update Post type with missing properties from linter errors
@@ -24,20 +20,7 @@ const { post, url } = Astro.props;
 ---
 
 <section class="mx-auto">
-  <article class="max-w-screen-2xl mx-auto">
-    
-    <!-- <ProjectHeader 
-      title={post.title}
-      technologies={post.technologies}
-      liveUrl={post.projectUrl}
-      githubUrl={post.repoUrl}
-      publishDate={post.publishDate}
-      author={post.author?.toString()}
-      readingTime={post.readingTime?.toString()}
-      image={post.image}
-      description={post.excerpt}
-    /> -->
-    
+  <article id="project-post" class="max-w-screen-2xl mx-auto">
     <div class="mx-auto px-6 sm:px-6">
       <slot />
     </div>
@@ -56,5 +39,11 @@ const { post, url } = Astro.props;
   }
 </style>
 
-
+<style is:global>
+  #project-post {
+    p{
+      margin-bottom: 0.75rem;
+    }
+  }
+</style>
 

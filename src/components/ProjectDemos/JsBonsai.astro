@@ -1,0 +1,37 @@
+<div id="js-bonsai"></div>
+
+<script src="/project-files/js-bonsai.js" is:inline></script>
+
+<script>
+    // Initialize js-bonsai with default options
+    document.addEventListener('DOMContentLoaded', () => {
+        const bonsai = new JSBonsai({
+            // Default options can be overridden here
+            live: true,
+            infinite: false,
+            time: 0.03,
+            wait: 4.0,
+            message: '',
+            life: 32,
+            verbose: false,
+            colorPalette: 'default'
+        });
+    });
+</script>
+
+<style>
+    #js-bonsai {
+        background-color: #000;
+        color: #4a5;
+        padding: 20px;
+        width: 100%;
+        min-height: 500px;
+        overflow: auto;
+        white-space: pre;
+        font-family: monospace;
+        line-height: 1.2;
+        font-size: 16px;
+        /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); */
+        border: 1px solid #333;
+    }
+</style>
