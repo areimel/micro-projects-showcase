@@ -1,0 +1,131 @@
+---
+import ProjectSandbox from '../ProjectComponents/ProjectSandbox.astro';
+import ProjectControls from '../ProjectComponents/ProjectControls.astro';
+
+// Define the controls for the example
+const colorPickerControls = [
+  {
+    id: 'backgroundColor',
+    label: 'Background Color',
+    type: 'select',
+    options: [
+      { value: '#ffffff', label: 'White' },
+      { value: '#000000', label: 'Black' },
+      { value: '#ff5555', label: 'Red' },
+      { value: '#55ff55', label: 'Green' },
+      { value: '#5555ff', label: 'Blue' }
+    ],
+    defaultValue: '#ffffff'
+  },
+  {
+    id: 'shapeType',
+    label: 'Shape Type',
+    type: 'radio',
+    options: [
+      { value: 'circle', label: 'Circle' },
+      { value: 'square', label: 'Square' },
+      { value: 'triangle', label: 'Triangle' }
+    ],
+    defaultValue: 'circle'
+  },
+  {
+    id: 'shapeSize',
+    label: 'Shape Size',
+    type: 'number',
+    min: 50,
+    max: 200,
+    step: 10,
+    defaultValue: 100
+  },
+  {
+    id: 'animationEnabled',
+    label: 'Enable Animation',
+    type: 'checkbox',
+    defaultValue: true
+  }
+];
+---
+
+<ProjectSandbox title="Controls Example" height="400px">
+  <div id="shape-demo" class="relative w-full h-full flex items-center justify-center">
+    <div id="shape" class="bg-black transition-all duration-500"></div>
+  </div>
+
+  <ProjectControls 
+    controls={colorPickerControls} 
+    title="Shape Controls" 
+    targetId="shape-demo" 
+  />
+</ProjectSandbox>
+
+<script>
+  // Initialize the demo with default values
+  document.addEventListener('DOMContentLoaded', () => {
+    const shapeElement = document.getElementById('shape');
+    if (!shapeElement) return;
+
+    // Apply initial settings
+    updateShape({
+      backgroundColor: '#ffffff',
+      shapeType: 'circle',
+      shapeSize: 100,
+      animationEnabled: true
+    });
+
+    // Listen for control changes
+    document.addEventListener('project-controls-update', (event) => {
+      // Type cast the event to access the detail property
+      const customEvent = event as CustomEvent<{
+        settings: Record<string, string | number | boolean>;
+        targetId: string;
+      }>;
+      
+      if (customEvent.detail.targetId === 'shape-demo') {
+        updateShape(customEvent.detail.settings);
+      }
+    });
+
+    // Function to update the shape based on settings
+    function updateShape(settings: Record<string, string | number | boolean>) {
+      if (!shapeElement) return;
+      
+      // Set container background color
+      const container = document.getElementById('shape-demo');
+      if (container) {
+        container.style.backgroundColor = settings.backgroundColor as string || '#ffffff';
+      }
+      
+      // Set shape size
+      const size = settings.shapeSize as number || 100;
+      shapeElement.style.width = `${size}px`;
+      shapeElement.style.height = `${size}px`;
+      
+      // Set shape type
+      const shapeType = settings.shapeType as string || 'circle';
+      shapeElement.style.borderRadius = shapeType === 'circle' ? '50%' : 
+                                         shapeType === 'triangle' ? '0' : '0';
+      
+      // Special case for triangle
+      if (shapeType === 'triangle') {
+        shapeElement.style.width = '0';
+        shapeElement.style.height = '0';
+        shapeElement.style.borderLeft = `${size/2}px solid transparent`;
+        shapeElement.style.borderRight = `${size/2}px solid transparent`;
+        shapeElement.style.borderBottom = `${size}px solid black`;
+        shapeElement.style.backgroundColor = 'transparent';
+      } else {
+        shapeElement.style.borderLeft = '';
+        shapeElement.style.borderRight = '';
+        shapeElement.style.borderBottom = '';
+        shapeElement.style.backgroundColor = 'black';
+      }
+      
+      // Apply animation if enabled
+      if (settings.animationEnabled) {
+        shapeElement.classList.add('animate-pulse');
+      } else {
+        shapeElement.classList.remove('animate-pulse');
+      }
+    }
+  });
+</script> 

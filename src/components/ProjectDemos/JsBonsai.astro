@@ -1,11 +1,79 @@
+---
+import ProjectControls from '../ProjectComponents/ProjectControls.astro';
+
+// Define the controls for the JS Bonsai demo
+const bonsaiControls = [
+  {
+    id: 'colorPalette',
+    label: 'Color Palette',
+    type: 'select',
+    options: [
+      { value: 'default', label: 'Default Green' },
+      { value: 'cherry', label: 'Cherry Blossom Pink' },
+      { value: 'wisteria', label: 'Wisteria Purple' },
+      { value: 'maple', label: 'Maple Red' }
+    ],
+    defaultValue: 'default'
+  },
+  {
+    id: 'live',
+    label: 'Live Growth',
+    type: 'checkbox',
+    defaultValue: true
+  },
+  {
+    id: 'infinite',
+    label: 'Infinite Growth',
+    type: 'checkbox',
+    defaultValue: false
+  },
+  {
+    id: 'time',
+    label: 'Growth Speed',
+    type: 'number',
+    min: 0.01,
+    max: 0.1,
+    step: 0.01,
+    defaultValue: 0.03
+  },
+  {
+    id: 'wait',
+    label: 'Wait Time (seconds)',
+    type: 'number',
+    min: 1,
+    max: 10,
+    step: 0.5,
+    defaultValue: 4.0
+  },
+  {
+    id: 'life',
+    label: 'Life Span',
+    type: 'number',
+    min: 10,
+    max: 100,
+    step: 1,
+    defaultValue: 32
+  }
+];
+---
+
 <div id="js-bonsai"></div>
 
+<ProjectControls 
+  controls={bonsaiControls} 
+  title="Bonsai Controls" 
+  targetId="js-bonsai" 
+/>
+
 <script src="/project-files/js-bonsai.js" is:inline></script>
+
+
 
 <script>
     // Initialize js-bonsai with default options
     document.addEventListener('DOMContentLoaded', () => {
-        const bonsai = new JSBonsai({
+        // Create JSBonsai instance
+        let bonsai = new JSBonsai({
             // Default options can be overridden here
             live: true,
             infinite: false,
@@ -15,6 +83,47 @@
             life: 32,
             verbose: false,
             colorPalette: 'default'
+        });
+        
+        // Define custom event type for TypeScript
+        interface ProjectControlsEvent extends CustomEvent {
+            detail: {
+                settings: Record<string, string | number | boolean>;
+                targetId: string;
+            };
+        }
+        
+        // Listen for control changes
+        document.addEventListener('project-controls-update', (event) => {
+            // Type assertion for the custom event
+            const controlEvent = event as ProjectControlsEvent;
+            
+            if (controlEvent.detail.targetId === 'js-bonsai') {
+                const settings = controlEvent.detail.settings;
+                
+                // Destroy existing instance
+                if (bonsai) {
+                    // Assuming JSBonsai has a destroy or reset method
+                    // If not, you might need to clear the container and reinitialize
+                    const container = document.getElementById('js-bonsai');
+                    if (container) {
+                        container.innerHTML = '';
+                    }
+                }
+                
+                // Create new instance with updated settings
+                bonsai = new JSBonsai({
+                    // Apply new settings while keeping defaults for any that weren't changed
+                    live: settings.live !== undefined ? settings.live as boolean : true,
+                    infinite: settings.infinite !== undefined ? settings.infinite as boolean : false,
+                    time: settings.time !== undefined ? settings.time as number : 0.03,
+                    wait: settings.wait !== undefined ? settings.wait as number : 4.0,
+                    message: '',
+                    life: settings.life !== undefined ? settings.life as number : 32,
+                    verbose: false,
+                    colorPalette: settings.colorPalette as string || 'default'
+                });
+            }
         });
     });
 </script>

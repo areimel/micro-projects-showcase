@@ -17,7 +17,7 @@ const customStyle = height ? `height: ${height}` : '';
   
   {title && <div class="absolute top-0 left-0 bg-black dark:bg-white text-white dark:text-black py-1 px-3 font-bold text-sm z-10">{title}</div>}
 
-  <div class="w-full h-full relative flex items-center justify-center">
+  <div class="w-full h-full relative flex flex-col gap-4 items-center justify-center">
     <slot />
   </div>
 

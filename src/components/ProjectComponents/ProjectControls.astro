@@ -1,0 +1,166 @@
+---
+interface Control {
+  id: string;
+  label: string;
+  type: 'select' | 'text' | 'number' | 'checkbox' | 'radio';
+  options?: Array<{ value: string; label: string }>;
+  defaultValue?: string | number | boolean;
+  min?: number;
+  max?: number;
+  step?: number;
+}
+
+interface Props {
+  controls: Control[];
+  title?: string;
+  targetId?: string; // ID of the element that will be controlled/updated
+}
+
+const { controls, title = "Controls", targetId } = Astro.props;
+---
+
+<div class="w-full flex flex-col gap-3 p-4 my-4 bg-white dark:bg-[--aw-color-bg-page-dark] border-2 border-black dark:border-white shadow-[4px_4px_0_0_rgba(0,0,0,1)] dark:shadow-[4px_4px_0_0_rgba(255,255,255,1)]">
+  <div class="bg-black dark:bg-white text-white dark:text-black py-1 px-3 font-bold text-sm self-start">
+    {title}
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+    {controls.map((control) => (
+      <div class="flex flex-col gap-1">
+        <label for={control.id} class="font-medium text-sm">
+          {control.label}
+        </label>
+        
+        {control.type === 'select' && (
+          <select 
+            id={control.id} 
+            class="border-2 border-black dark:border-white bg-white dark:bg-[--aw-color-bg-page-dark] p-2"
+            data-control-type={control.type}
+            data-control-id={control.id}
+          >
+            {control.options?.map((option) => (
+              <option value={option.value} selected={option.value === control.defaultValue}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        )}
+        
+        {control.type === 'text' && (
+          <input 
+            type="text" 
+            id={control.id} 
+            value={control.defaultValue as string} 
+            class="border-2 border-black dark:border-white bg-white dark:bg-[--aw-color-bg-page-dark] p-2"
+            data-control-type={control.type}
+            data-control-id={control.id}
+          />
+        )}
+        
+        {control.type === 'number' && (
+          <input 
+            type="number" 
+            id={control.id} 
+            value={control.defaultValue as number} 
+            min={control.min} 
+            max={control.max} 
+            step={control.step} 
+            class="border-2 border-black dark:border-white bg-white dark:bg-[--aw-color-bg-page-dark] p-2"
+            data-control-type={control.type}
+            data-control-id={control.id}
+          />
+        )}
+        
+        {control.type === 'checkbox' && (
+          <div class="flex items-center">
+            <input 
+              type="checkbox" 
+              id={control.id} 
+              checked={control.defaultValue as boolean} 
+              class="w-5 h-5 border-2 border-black dark:border-white"
+              data-control-type={control.type}
+              data-control-id={control.id}
+            />
+          </div>
+        )}
+        
+        {control.type === 'radio' && control.options && (
+          <div class="flex flex-col gap-2">
+            {control.options.map((option) => (
+              <div class="flex items-center gap-2">
+                <input 
+                  type="radio" 
+                  id={`${control.id}-${option.value}`} 
+                  name={control.id} 
+                  value={option.value} 
+                  checked={option.value === control.defaultValue}
+                  class="w-4 h-4 border-2 border-black dark:border-white"
+                  data-control-type={control.type}
+                  data-control-id={control.id}
+                />
+                <label for={`${control.id}-${option.value}`} class="text-sm">
+                  {option.label}
+                </label>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+
+  <button
+    id="controls-apply-btn"
+    class="hover:text-primary px-4 py-3 text-center neo-border neo-border-normal block neo-shadow-normal neo-hover"
+  >
+    Re-Run Project
+  </button>
+</div>
+
+<script define:vars={{ targetId, controls }}>
+  // Wait for DOM to be fully loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    const applyButton = document.getElementById('controls-apply-btn');
+    
+    if (!applyButton) return;
+    
+    applyButton.addEventListener('click', () => {
+      // Collect all current control values
+      const settings = {};
+      
+      controls.forEach(control => {
+        const id = control.id;
+        
+        if (control.type === 'select' || control.type === 'text') {
+          const element = document.getElementById(id);
+          settings[id] = element.value;
+        } 
+        else if (control.type === 'number') {
+          const element = document.getElementById(id);
+          settings[id] = parseFloat(element.value);
+        } 
+        else if (control.type === 'checkbox') {
+          const element = document.getElementById(id);
+          settings[id] = element.checked;
+        } 
+        else if (control.type === 'radio') {
+          const checkedRadio = document.querySelector(`input[name="${id}"]:checked`);
+          if (checkedRadio) {
+            settings[id] = checkedRadio.value;
+          }
+        }
+      });
+      
+      // Dispatch a custom event with the settings
+      const event = new CustomEvent('project-controls-update', {
+        detail: {
+          settings,
+          targetId
+        },
+        bubbles: true
+      });
+      
+      document.dispatchEvent(event);
+    });
+  });
+</script> 
