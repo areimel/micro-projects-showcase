@@ -1,0 +1,67 @@
+---
+// FPS Counter component for displaying current page frame rate
+---
+
+<div id="fps-counter">
+  <span>FPS: <span id="fps-value">0</span></span>
+</div>
+
+<script>
+  // Initialize variables needed for FPS calculation
+  let frameCount = 0;
+  let lastTime = performance.now();
+  let fps = 0;
+  
+  // FPS counter element reference
+  const fpsValueElement = document.getElementById('fps-value');
+  
+  // Function to update the FPS counter
+  function updateFPS() {
+    // Increment frame count
+    frameCount++;
+    
+    // Calculate elapsed time
+    const currentTime = performance.now();
+    const elapsedTime = currentTime - lastTime;
+    
+    // Update FPS calculation approximately once per second
+    if (elapsedTime >= 1000) {
+      // Calculate frames per second
+      fps = Math.round((frameCount * 1000) / elapsedTime);
+      
+      // Update display
+      if (fpsValueElement) {
+        fpsValueElement.textContent = fps.toString();
+      }
+      
+      // Reset counters
+      frameCount = 0;
+      lastTime = currentTime;
+    }
+    
+    // Request next animation frame
+    requestAnimationFrame(updateFPS);
+  }
+  
+  // Start the FPS monitoring when the component is mounted
+  document.addEventListener('DOMContentLoaded', () => {
+    requestAnimationFrame(updateFPS);
+  });
+</script>
+
+<style>
+  /* Positioning the FPS counter in the top right corner */
+  #fps-counter {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #00ff00; /* Bright green text for visibility */
+    font-family: monospace;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    z-index: 9999; /* Ensure it's above other elements */
+    user-select: none; /* Prevent text selection */
+  }
+</style>
