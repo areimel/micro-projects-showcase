@@ -1,0 +1,243 @@
+---
+// Script to control the grid animations
+const ROWS = 20;
+const COLS = 10;
+const GRIDS = 4; // Number of light grid panels to display
+
+// Generate cell coordinates (1-indexed for rows, a-j for columns)
+// Leaving this in for reference, but not using it directly to fix type errors
+// Defining the cell arrays in client-side JavaScript instead
+---
+
+<div id="super-computer-lights">
+  
+    <div class="controls">
+        <button id="random-pattern">Random</button>
+        <button id="horizontal-scroll">Horizontal Scroll</button>
+        <button id="vertical-scroll">Vertical Scroll</button>
+    </div>
+
+    <div class="light-grid-container">
+        {Array.from({ length: GRIDS }).map((_, gridIndex) => (
+            <div class={`light-grid grid-${gridIndex + 1}`}>
+                {Array.from({ length: ROWS }).map((_, rowIndex) => (
+                    <div class="grid-row">
+                        {Array.from({ length: COLS }).map((_, colIndex) => {
+                            // Convert to 1-indexed row and a-j column format
+                            const row = rowIndex + 1;
+                            const col = String.fromCharCode(97 + colIndex);
+                            return <div class={`cell cell-${row}-${col}`} data-grid={gridIndex + 1}></div>;
+                        })}
+                    </div>
+                ))}
+            </div>
+        ))}
+    </div>
+
+</div>
+
+<style>
+    #super-computer-lights {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        background-color: #111;
+        border-radius: 8px;
+    }
+
+    .controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .controls button {
+        padding: 8px 12px;
+        background-color: #333;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: monospace;
+    }
+
+    .controls button:hover {
+        background-color: #444;
+    }
+
+    .light-grid-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Two grids per row */
+        gap: 25px; /* Space between grids */
+        padding: 10px;
+        background-color: black;
+        border: 2px solid #444;
+    }
+
+    .light-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        border: 1px solid #333;
+        padding: 5px;
+    }
+
+    .grid-row {
+        display: flex;
+        gap: 2px;
+    }
+
+    .cell {
+        width: 20px;
+        height: 20px;
+        background-color: black;
+        border: 1px solid #222;
+    }
+
+    .cell.on {
+        background-color: #ff0000;
+        box-shadow: 0 0 5px #ff0000;
+    }
+</style>
+
+<script>
+  // Initialize the grid once the DOM is loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    // Constants for grid dimensions
+    const ROWS = 30;
+    const COLS = 10;
+    const GRIDS = 4;
+    
+    // Get all cells
+    const cells = document.querySelectorAll('.cell');
+    // Store animation timers
+    let animationTimers = [];
+    
+    // Function to clear all animations
+    function clearAllAnimations() {
+      // Clear each timer safely
+      for (let i = 0; i < animationTimers.length; i++) {
+        window.clearInterval(animationTimers[i]);
+      }
+      // Reset the timers array
+      animationTimers = [];
+    }
+    
+    // Function to toggle random cells on and off
+    function randomPattern() {
+      // Clear any existing animations
+      clearAllAnimations();
+      
+      // Turn all cells off initially
+      cells.forEach(cell => cell.classList.remove('on'));
+      
+      // Create separate random patterns for each grid
+      for (let g = 1; g <= GRIDS; g++) {
+        const gridCells = document.querySelectorAll(`.grid-${g} .cell`);
+        
+        // Set random cells as on with timer
+        const timer = window.setInterval(() => {
+          gridCells.forEach(cell => {
+            // 30% chance of a cell being on
+            if (Math.random() < 0.3) {
+              cell.classList.add('on');
+            } else {
+              cell.classList.remove('on');
+            }
+          });
+        }, 300);
+        
+        // Store the timer ID
+        animationTimers.push(timer);
+      }
+    }
+    
+    // Function for horizontal scrolling pattern
+    function horizontalScroll() {
+      // Clear any existing animations
+      clearAllAnimations();
+      
+      // Turn all cells off initially
+      cells.forEach(cell => cell.classList.remove('on'));
+      
+      // Create separate animations for each grid
+      for (let g = 1; g <= GRIDS; g++) {
+        let colIndex = 0;
+        const gridCells = document.querySelectorAll(`.grid-${g} .cell`);
+        
+        // Move a column of lights from left to right
+        const timer = window.setInterval(() => {
+          gridCells.forEach((cell, index) => {
+            // If the cell is in the current column, turn it on
+            if (index % COLS === colIndex) {
+              cell.classList.add('on');
+            } else {
+              cell.classList.remove('on');
+            }
+          });
+          
+          // Move to next column, wrap around when needed
+          colIndex = (colIndex + 1) % COLS;
+        }, 150);
+        
+        // Store the timer ID
+        animationTimers.push(timer);
+      }
+    }
+    
+    // Function for vertical scrolling pattern
+    function verticalScroll() {
+      // Clear any existing animations
+      clearAllAnimations();
+      
+      // Turn all cells off initially
+      cells.forEach(cell => cell.classList.remove('on'));
+      
+      // Create separate animations for each grid
+      for (let g = 1; g <= GRIDS; g++) {
+        let rowIndex = 0;
+        const gridCells = document.querySelectorAll(`.grid-${g} .cell`);
+        
+        // Move a row of lights from top to bottom
+        const timer = window.setInterval(() => {
+          gridCells.forEach((cell, index) => {
+            const cellRow = Math.floor(index / COLS);
+            
+            // If the cell is in the current row, turn it on
+            if (cellRow === rowIndex) {
+              cell.classList.add('on');
+            } else {
+              cell.classList.remove('on');
+            }
+          });
+          
+          // Move to next row, wrap around when needed
+          rowIndex = (rowIndex + 1) % ROWS;
+        }, 150);
+        
+        // Store the timer ID
+        animationTimers.push(timer);
+      }
+    }
+
+    // Start with random pattern by default
+    randomPattern();
+
+    // Safely add event listeners to buttons
+    const randomBtn = document.getElementById('random-pattern');
+    if (randomBtn) {
+      randomBtn.addEventListener('click', randomPattern);
+    }
+    
+    const horizontalBtn = document.getElementById('horizontal-scroll');
+    if (horizontalBtn) {
+      horizontalBtn.addEventListener('click', horizontalScroll);
+    }
+    
+    const verticalBtn = document.getElementById('vertical-scroll');
+    if (verticalBtn) {
+      verticalBtn.addEventListener('click', verticalScroll);
+    }
+  });
+</script>

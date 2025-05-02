@@ -5,6 +5,7 @@ import merge from 'lodash.merge';
 import type { ImageMetadata } from 'astro';
 import Layout from '~/layouts/SidebarLayout.astro';
 import ProjectPost from '~/components/ProjectComponents/ProjectPost.astro';
+import FpsCounter from '~/components/ProjectComponents/FpsCounter.astro';
 
 import { getCanonical, getPermalink } from '~/utils/permalinks';
 import { getStaticPathsProjectPost, projectPostRobots } from '~/utils/projects';
@@ -53,6 +54,7 @@ const metadata = merge(
   <ProjectPost post={{ ...project, image: image }} url={url}>
     {project.Content ? <project.Content /> : <Fragment set:html={project.content || ''} />}
   </ProjectPost>
+<!--   <FpsCounter /> -->
   
   
   
